@@ -37,7 +37,8 @@ function isCategory(value: unknown): value is ArtworkCategory {
 function isTileBoard(value: unknown, size: GridSize): value is number[] {
   return Array.isArray(value) &&
     value.length === size * size &&
-    value.every((tile) => typeof tile === 'number' && Number.isInteger(tile) && tile >= 0 && tile < size * size)
+    value.every((tile) => typeof tile === 'number' && Number.isInteger(tile) && tile >= 0 && tile < size * size) &&
+    new Set(value).size === size * size
 }
 
 function isBoardHistory(value: unknown, size: GridSize): value is number[][] {
@@ -45,18 +46,23 @@ function isBoardHistory(value: unknown, size: GridSize): value is number[][] {
 }
 
 export function loadSavedGame(): SavedGame | null {
-  const raw = window.localStorage.getItem(SAVE_KEY)
-  if (!raw) return null
-
   try {
+    const raw = window.localStorage.getItem(SAVE_KEY)
+    if (!raw) return null
+
     const value: unknown = JSON.parse(raw)
     if (!isRecord(value) || !isGridSize(value.gridSize)) return null
     if (!isTileBoard(value.tiles, value.gridSize) || !isBoardHistory(value.pastBoards, value.gridSize)) return null
     if (!isBoardHistory(value.futureBoards, value.gridSize)) return null
     if (
       typeof value.moves !== 'number' ||
+      !Number.isFinite(value.moves) ||
+      value.moves < 0 ||
       typeof value.elapsedSeconds !== 'number' ||
+      !Number.isFinite(value.elapsedSeconds) ||
+      value.elapsedSeconds < 0 ||
       typeof value.artworkSeed !== 'number' ||
+      !Number.isFinite(value.artworkSeed) ||
       !isCategory(value.category) ||
       !isMode(value.mode)
     ) return null
@@ -72,12 +78,15 @@ export function loadSavedGame(): SavedGame | null {
       pastBoards: value.pastBoards,
       futureBoards: value.futureBoards,
     }
-  } catch (error) {
-    if (error instanceof SyntaxError) return null
-    throw error
+  } catch {
+    return null
   }
 }
 
 export function saveGame(game: SavedGame) {
-  window.localStorage.setItem(SAVE_KEY, JSON.stringify(game))
+  try {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify(game))
+  } catch {
+    // Storage may be unavailable in private browsing or restricted webviews.
+  }
 }
