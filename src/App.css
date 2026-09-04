@@ -14,6 +14,7 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background:
     radial-gradient(circle at 81% 14%, rgba(216, 171, 119, 0.2), transparent 19rem),
@@ -339,6 +340,9 @@
   background-repeat: no-repeat;
   background-size: calc(var(--grid-size) * 100%) calc(var(--grid-size) * 100%);
   cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition: filter 250ms ease, transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 250ms ease;
 }
 
@@ -966,29 +970,59 @@
 @media (max-width: 700px) {
   .topbar,
   .game-layout {
-    width: calc(100% - 36px);
+    width: calc(100% - 24px);
   }
 
   .topbar {
-    min-height: 72px;
+    min-height: calc(64px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
   }
 
   .topbar-actions {
-    gap: 10px;
+    gap: 6px;
+  }
+
+  .brand {
+    gap: 7px;
+    font-size: 16px;
+  }
+
+  .brand-mark {
+    width: 29px;
+    height: 29px;
   }
 
   .daily-button,
   .new-puzzle-button {
-    font-size: 10px;
+    min-height: 44px;
+    padding: 0 3px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .daily-button {
+    gap: 5px;
+  }
+
+  .new-puzzle-button {
+    gap: 5px;
+  }
+
+  .daily-button span {
+    font-size: 15px;
+  }
+
+  .new-puzzle-button span {
+    font-size: 20px;
   }
 
   .game-layout {
     min-height: auto;
-    padding: 47px 0 50px;
+    padding: 30px 0 calc(42px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 47px;
+    gap: 32px;
   }
 
   .intro {
@@ -996,7 +1030,7 @@
   }
 
   .intro h1 {
-    margin: 16px 0 17px;
+    margin: 13px 0 14px;
     font-size: clamp(39px, 12vw, 54px);
   }
 
@@ -1007,7 +1041,7 @@
 
   .intro-rule {
     justify-content: center;
-    margin: 24px 0 14px;
+    margin: 20px 0 12px;
   }
 
   .intro-rule::before {
@@ -1019,7 +1053,22 @@
   }
 
   .stage-topline {
+    gap: 12px;
     margin-bottom: 12px;
+  }
+
+  .stage-topline > div:first-child {
+    min-width: 0;
+  }
+
+  .stage-kicker {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stage-status {
+    font-size: 16px;
   }
 
   .board-frame {
@@ -1037,8 +1086,8 @@
   .side-rail {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px;
-    padding-top: 23px;
+    gap: 18px;
+    padding-top: 20px;
   }
 
   .difficulty-section {
@@ -1047,7 +1096,7 @@
 
   .mode-section {
     grid-column: 1 / -1;
-    padding: 19px 0 0;
+    padding: 18px 0 0;
     border-top: 1px solid var(--line);
     border-left: 0;
   }
@@ -1055,35 +1104,76 @@
   .completion-note {
     grid-column: 1 / -1;
     min-height: 57px;
-    padding: 19px 0 0;
+    padding: 18px 0 0;
     border-top: 1px solid var(--line);
     border-left: 0;
   }
 
   .category-section {
     grid-column: 1 / -1;
-    padding: 19px 0 0;
+    padding: 18px 0 0;
     border-top: 1px solid var(--line);
     border-left: 0;
   }
 
   .category-picker {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .difficulty-picker {
+    gap: 8px;
+  }
+
+  .difficulty-picker button,
+  .mode-picker button,
+  .category-picker button {
+    min-height: 44px;
+    font-size: 12px;
   }
 
   .rail-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px;
+    gap: 8px 14px;
     margin-top: 0;
   }
 
   .rail-action {
-    min-height: 37px;
+    min-height: 44px;
+    font-size: 12px;
   }
 
   .reference-panel {
     margin-top: 0;
+  }
+
+  .settings-panel {
+    margin-top: 18px;
+    font-size: 12px;
+  }
+
+  .settings-panel summary {
+    min-height: 48px;
+    padding: 14px 0 10px;
+  }
+
+  .settings-list {
+    gap: 5px;
+  }
+
+  .settings-list label {
+    min-height: 42px;
+  }
+
+  .setting-select select {
+    min-height: 42px;
+    max-width: 145px;
+  }
+
+  .save-copy-button {
+    min-height: 42px;
+    padding: 7px 12px;
   }
 }
 
