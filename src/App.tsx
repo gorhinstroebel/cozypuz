@@ -60,8 +60,24 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
+function readStorage(key: string) {
+  try {
+    return window.localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writeStorage(key: string, value: string) {
+  try {
+    window.localStorage.setItem(key, value)
+  } catch {
+    // Storage may be unavailable in private browsing or restricted webviews.
+  }
+}
+
 function loadSettings(): Settings {
-  const raw = window.localStorage.getItem(SETTINGS_KEY)
+  const raw = readStorage(SETTINGS_KEY)
   if (!raw) return defaultSettings
 
   try {
@@ -85,7 +101,7 @@ function loadSettings(): Settings {
 }
 
 function getBestMoves(size: GridSize, mode: PlayMode, category: ArtworkCategory) {
-  const storedValue = window.localStorage.getItem(`${BEST_MOVES_PREFIX}${mode}-${category}-${size}`)
+  const storedValue = readStorage(`${BEST_MOVES_PREFIX}${mode}-${category}-${size}`)
   const parsedValue = storedValue ? Number(storedValue) : NaN
   return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : null
 }
@@ -98,16 +114,20 @@ function formatTime(seconds: number) {
 
 function createArtworkSeed() {
   const values = new Uint32Array(1)
-  window.crypto.getRandomValues(values)
+  if (window.crypto?.getRandomValues) {
+    window.crypto.getRandomValues(values)
+  } else {
+    values[0] = Math.floor(Math.random() * 2 ** 32)
+  }
   return values[0]
 }
 
 function unlockAchievement(id: string) {
-  window.localStorage.setItem(`${ACHIEVEMENT_PREFIX}${id}`, 'true')
+  writeStorage(`${ACHIEVEMENT_PREFIX}${id}`, 'true')
 }
 
 function getUnlockedAchievementCount() {
-  return ACHIEVEMENTS.filter((id) => window.localStorage.getItem(`${ACHIEVEMENT_PREFIX}${id}`) === 'true').length
+  return ACHIEVEMENTS.filter((id) => readStorage(`${ACHIEVEMENT_PREFIX}${id}`) === 'true').length
 }
 
 function App() {
@@ -169,7 +189,7 @@ function App() {
   }, [artworkSeed, category, elapsedSeconds, futureBoards, gridSize, mode, moves, pastBoards, tiles])
 
   useEffect(() => {
-    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
+    writeStorage(SETTINGS_KEY, JSON.stringify(settings))
     document.documentElement.dataset.theme = settings.darkMode ? 'dark' : 'light'
     document.documentElement.dataset.textSize = settings.largeText ? 'large' : 'normal'
     document.documentElement.dataset.accent = settings.colorTheme
@@ -245,7 +265,7 @@ function App() {
 
       if (bestMoves === null || nextMoves < bestMoves) {
         setBestMoves(nextMoves)
-        window.localStorage.setItem(`${BEST_MOVES_PREFIX}${mode}-${category}-${gridSize}`, String(nextMoves))
+        writeStorage(`${BEST_MOVES_PREFIX}${mode}-${category}-${gridSize}`, String(nextMoves))
       }
     }
   }
@@ -292,7 +312,7 @@ function App() {
   }
 
   function exportSave() {
-    const savedData = window.localStorage.getItem(SAVE_KEY)
+    const savedData = readStorage(SAVE_KEY)
     if (!savedData) return
 
     const blob = new Blob([savedData], { type: 'application/json' })
@@ -342,7 +362,7 @@ function App() {
   return (
     <main className={`app-shell ${settings.highContrast ? 'is-high-contrast' : ''}`}>
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Cozy Puz home">
+        <a className="brand" href={import.meta.env.BASE_URL} aria-label="Cozy Puz home">
           <span className="brand-mark" aria-hidden="true"><span /><span /><span /></span>
           <span>Cozy Puz</span>
         </a>

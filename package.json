@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "build:web": "vite build",
     "start": "electron .",
+    "dist": "npm run build:web && electron-builder",
     "dist:win": "npm run build:web && electron-builder --win",
+    "dist:mac": "npm run build:web && electron-builder --mac",
+    "dist:linux": "npm run build:web && electron-builder --linux",
     "lint": "oxlint",
     "test": "vitest run",
     "preview": "vite preview"
@@ -58,6 +61,21 @@
         }
       ],
       "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Game",
+      "maintainer": "Cozy Puz"
     },
     "nsis": {
       "oneClick": false,
