@@ -49,3 +49,14 @@ assets, pricing, and game review before the game can be sold. The game state is
 stored in Electron's local application data, which can be included in a
 Steam Cloud configuration once the publisher's Steam App ID and depot paths
 are available.
+
+## GitHub Pages
+
+The web build is deployed automatically to GitHub Pages when changes are
+published to `main` or `master`. To build the browser version locally, run:
+
+```sh
+npm run build:web
+```
+
+The generated site is written to `dist/`.

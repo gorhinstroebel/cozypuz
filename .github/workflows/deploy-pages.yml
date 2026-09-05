@@ -2,7 +2,9 @@ name: Deploy Cozy Puz to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -28,7 +30,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build web game
         run: npm run build:web
