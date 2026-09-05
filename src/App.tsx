@@ -41,7 +41,7 @@ type Settings = {
   showTimer: boolean
   weather: Weather
   timeOfDay: TimeOfDay
-  colorTheme: 'terracotta' | 'sage' | 'lavender' | 'blue'
+  colorTheme: 'terracotta' | 'sage' | 'lavender' | 'blue' | 'japanese'
 }
 
 const defaultSettings: Settings = {
@@ -92,7 +92,7 @@ function loadSettings(): Settings {
       showTimer: value.showTimer !== false,
       weather: value.weather === 'sunny' || value.weather === 'rainy' || value.weather === 'misty' ? value.weather : 'auto',
       timeOfDay: value.timeOfDay === 'morning' || value.timeOfDay === 'afternoon' || value.timeOfDay === 'evening' ? value.timeOfDay : 'auto',
-      colorTheme: value.colorTheme === 'sage' || value.colorTheme === 'lavender' || value.colorTheme === 'blue' ? value.colorTheme : 'terracotta',
+      colorTheme: value.colorTheme === 'sage' || value.colorTheme === 'lavender' || value.colorTheme === 'blue' || value.colorTheme === 'japanese' ? value.colorTheme : 'terracotta',
     }
   } catch (error) {
     if (error instanceof SyntaxError) return defaultSettings
@@ -554,6 +554,7 @@ function App() {
                   <option value="sage">Sage</option>
                   <option value="lavender">Lavender</option>
                   <option value="blue">Blue</option>
+                  <option value="japanese">Japanese</option>
                 </select>
               </label>
               <span className="achievement-count">{unlockedAchievementCount} / {ACHIEVEMENTS.length} little milestones</span>
