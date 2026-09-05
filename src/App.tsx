@@ -219,7 +219,8 @@ function App() {
 
     window.addEventListener('keydown', handleShortcut)
     return () => window.removeEventListener('keydown', handleShortcut)
-  }, [category, gridSize, mode, pastBoards, futureBoards, solved, timeExpired, tiles])
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, futureBoards, gridSize, pastBoards, solved, timeExpired])
 
   function startNewPuzzle(
     size: GridSize = gridSize,
