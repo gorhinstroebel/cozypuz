@@ -892,6 +892,39 @@ kbd {
   line-height: 1.4;
 }
 
+.completion-next {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--terracotta-deep);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.completion-next:hover {
+  border-color: var(--terracotta);
+  background: var(--surface);
+}
+
+.completion-next span {
+  margin: 0;
+  font-size: 15px;
+  transition: transform 180ms ease;
+}
+
+.completion-next:hover span {
+  transform: translateX(3px);
+}
+
 .rail-footer {
   margin: 31px 0 0;
   color: var(--muted);
@@ -1201,6 +1234,10 @@ a:focus-visible {
     padding: 18px 0 0;
     border-top: 1px solid var(--line);
     border-left: 0;
+  }
+
+  .completion-next {
+    align-self: center;
   }
 
   .completion-note {

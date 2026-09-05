@@ -599,6 +599,11 @@ function App() {
               <strong>Nicely done.</strong>
               <span>You made a moment of stillness.</span>
             </div>
+            {solved && (
+              <button className="completion-next" type="button" onClick={() => startNewPuzzle()}>
+                Another picture <span aria-hidden="true">→</span>
+              </button>
+            )}
           </div>
 
           <p className="rail-footer"><span aria-hidden="true">◌</span> a soft place to pause · <kbd>N</kbd> new · <kbd>H</kbd> hint</p>
