@@ -309,6 +309,22 @@
   font-weight: 500;
 }
 
+.progress-track {
+  height: 4px;
+  margin: 0 5px 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--terracotta), var(--terracotta-deep));
+  transition: width 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 .playing-dot {
   width: 6px;
   height: 6px;
@@ -524,6 +540,18 @@
   font-size: 11px;
   letter-spacing: 0.01em;
   text-align: center;
+}
+
+kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--surface-soft);
+  font-family: var(--sans);
+  font-size: 9px;
+  line-height: 1;
 }
 
 .help-icon {
@@ -878,6 +906,25 @@
   font-size: 18px;
   font-style: normal;
   vertical-align: -1px;
+}
+
+button:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @keyframes rise-in {

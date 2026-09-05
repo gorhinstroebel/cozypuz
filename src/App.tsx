@@ -162,6 +162,8 @@ function App() {
     ? Math.max(0, TIME_LIMIT_SECONDS - elapsedSeconds)
     : elapsedSeconds
   const modeLabel = mode === 'timed' ? 'Five quiet minutes' : mode === 'daily' ? 'Today’s picture' : 'Take your time'
+  const placedTiles = tiles.reduce((count, tileId, index) => count + (tileId === index ? 1 : 0), 0)
+  const progressPercent = Math.round((placedTiles / tiles.length) * 100)
 
   useEffect(() => {
     if (!isRunning || solved || timeExpired) return
@@ -199,6 +201,25 @@ function App() {
     if (!settings.ambientEnabled) stopAmbient()
     return () => stopAmbient()
   }, [settings.ambientEnabled])
+
+  useEffect(() => {
+    function handleShortcut(event: globalThis.KeyboardEvent) {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return
+      const target = event.target as HTMLElement | null
+      if (target?.matches('input, select, textarea, button')) return
+
+      const shortcut = event.key.toLowerCase()
+      if (shortcut === 'n') startNewPuzzle()
+      if (shortcut === 'd') startNewPuzzle(gridSize, category, 'daily')
+      if (shortcut === 'u') undoMove()
+      if (shortcut === 'r') redoMove()
+      if (shortcut === 'h') showHint()
+      if (shortcut === 'p') setShowPreview((visible) => !visible)
+    }
+
+    window.addEventListener('keydown', handleShortcut)
+    return () => window.removeEventListener('keydown', handleShortcut)
+  }, [category, gridSize, mode, pastBoards, futureBoards, solved, timeExpired, tiles])
 
   function startNewPuzzle(
     size: GridSize = gridSize,
@@ -353,6 +374,12 @@ function App() {
       return
     }
 
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleTileClick(index)
+      return
+    }
+
     if (direction) {
       event.preventDefault()
       moveFocus(index, direction)
@@ -401,6 +428,9 @@ function App() {
               <span>moves</span>
             </div>
           </div>
+          <div className="progress-track" role="progressbar" aria-label="Picture progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}>
+            <span style={{ width: `${progressPercent}%` }} />
+          </div>
 
           <div className={`board-frame ${solved ? 'is-solved' : ''} ${timeExpired ? 'is-paused' : ''}`} key={`${artworkSeed}-${category}-${settings.weather}-${settings.timeOfDay}`}>
             <div className="board-shadow" aria-hidden="true" />
@@ -445,7 +475,7 @@ function App() {
           </div>
           <p className="stage-help" id="puzzle-help">
             <span className="help-icon" aria-hidden="true">✦</span>
-            Select a tile, then select the tile you would like to trade places with.
+            Select two tiles to trade places · <kbd>Enter</kbd> selects · <kbd>Esc</kbd> clears
           </p>
         </section>
 
@@ -570,7 +600,7 @@ function App() {
             </div>
           </div>
 
-          <p className="rail-footer"><span aria-hidden="true">◌</span> a soft place to pause</p>
+          <p className="rail-footer"><span aria-hidden="true">◌</span> a soft place to pause · <kbd>N</kbd> new · <kbd>H</kbd> hint</p>
         </aside>
       </div>
     </main>
