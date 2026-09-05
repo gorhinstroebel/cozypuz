@@ -944,6 +944,11 @@
   --terracotta-deep: #4A7182;
 }
 
+:root[data-accent='japanese'] {
+  --terracotta: #B85C62;
+  --terracotta-deep: #8E3F49;
+}
+
 :root[data-theme='dark'] body {
   background: #253435;
 }
